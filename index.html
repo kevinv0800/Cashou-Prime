@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-ao">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cashout Prime - Profissional</title>
+    <style>
+        :root { 
+            --primary: #00ff00; 
+            --secondary: #ff3b3b; 
+            --bg-gradient: radial-gradient(circle at top, #0a3d26, #000);
+            --glass: rgba(0, 0, 0, 0.88);
+        }
+
+        /* Reset Geral para qualquer ecrã */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; font-family: 'Segoe UI', system-ui, sans-serif; 
+            overflow: hidden; color: white;
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 5px var(--primary); } 50% { box-shadow: 0 0 20px var(--primary); } 100% { box-shadow: 0 0 5px var(--primary); } }
+
+        /* SPLASH SCREEN RESPONSIVA */
+        #splash {
+            position: fixed; inset: 0; z-index: 20000;
+            background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .loader {
+            width: 60px; height: 60px; border: 4px solid #111; border-top: 4px solid var(--primary);
+            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+
+        /* TELAS (LOGIN, ADM, SELEÇÃO) */
+        .screen { 
+            position: fixed; inset: 0; z-index: 10000; 
+            background: var(--bg-gradient);
+            display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+
+        .card { 
+            background: var(--glass); padding: 30px; border-radius: 25px; 
+            border: 1px solid rgba(0, 255, 0, 0.2); width: 100%; max-width: 400px; 
+            text-align: center; backdrop-filter: blur(15px);
+            animation: fadeInScale 0.5s ease-out;
+        }
+
+        h2 { color: var(--primary); text-transform: uppercase; margin-bottom: 20px; font-size: 1.5rem; }
+
+        input, select { 
+            width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; 
+            border: 1px solid #1a4d35; background: #05140d; color: white; 
+            font-size: 16px; outline: none; transition: 0.3s;
+        }
+
+        .btn-go { 
+            background: var(--primary); color: #000; padding: 16px; border: none; 
+            border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer;
+            margin-top: 10px; text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-go:hover { filter: brightness(1.2); transform: translateY(-2px); }
+
+        /* LISTA ADM */
+        .user-list { 
+            margin-top: 20px; max-height: 150px; overflow-y: auto; 
+            text-align: left; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px;
+        }
+        .user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a4d35; }
+
+        /* INTERFACE DO SITE E OVERLAY */
+        #site-wrapper { position: absolute; inset: 0; z-index: 1; display: none; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        #float-btn { 
+            position: fixed; bottom: 30px; right: 20px; width: 65px; height: 65px; 
+            background: var(--primary); border-radius: 50%; display: none; 
+            align-items: center; justify-content: center; z-index: 15000; 
+            border: 3px solid white; animation: pulseGlow 2s infinite; cursor: pointer;
+        }
+
+        #signal-card { 
+            position: fixed; bottom: 105px; right: 20px; width: calc(100% - 40px); max-width: 350px;
+            background: var(--glass); border: 2px solid var(--secondary); border-radius: 20px; 
+            padding: 15px; display: none; z-index: 14000; animation: slideUp 0.4s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .grid-signals { display: flex; justify-content: space-between; gap: 8px; }
+        .box { 
+            border: 2px solid var(--primary); border-radius: 12px; padding: 12px 5px; 
+            flex: 1; text-align: center; font-size: 13px; font-weight: bold; 
+            background: rgba(0,0,0,0.8);
+        }
+
+        /* Responsividade para Tablets/Desktop */
+        @media (min-width: 768px) {
+            .card { max-width: 450px; }
+            #signal-card { right: 30px; bottom: 110px; }
+        }
+    </style>
+</head>
+<body>
+
+<audio id="beep" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+<div id="splash">
+    <div class="loader"></div>
+    <div style="color:var(--primary); font-weight:bold; letter-spacing:3px;">CASHOUT PRIME</div>
+</div>
+
+<div id="login-screen" class="screen">
+    <div class="card">
+        <h2>Acesso Restrito</h2>
+        <input type="text" id="u" placeholder="Usuário">
+        <input type="password" id="p" placeholder="Senha">
+        <button class="btn-go" onclick="auth()">ENTRAR</button>
+        <p style="font-size: 11px; margin-top: 20px; color: #444;" onclick="adminLogin()">ADM PANEL</p>
+    </div>
+</div>
+
+<div id="admin-screen" class="screen">
+    <div class="card">
+        <h2>Administração</h2>
+        <input type="text" id="new-u" placeholder="Nome do Cliente">
+        <input type="password" id="new-p" placeholder="Senha">
+        <select id="new-days">
+            <option value="3">3 DIAS</option>
+            <option value="7">7 DIAS</option>
+            <option value="30">30 DIAS</option>
+            <option value="9999">VITALÍCIO</option>
+        </select>
+        <button class="btn-go" onclick="add()">CRIAR CONTA</button>
+        <div class="user-list" id="list"></div>
+        <button class="btn-go" style="background:transparent; color:white; border:1px solid #444;" onclick="setS('login-screen')">VOLTAR</button>
+    </div>
+</div>
+
+<div id="box-selection" class="screen">
+    <div class="card">
+        <h2>ESCOLHA A BANCA</h2>
+        <button class="btn-go" onclick="go('https://888bets.co.ao/')">888BET</button>
+        <button class="btn-go" onclick="go('https://elephantbet.co.ao/')">ELEPHANT BET</button>
+        <button class="btn-go" onclick="go('https://bantubet.co.ao/')">BANTUBET</button>
+    </div>
+</div>
+
+<div id="site-wrapper">
+    <iframe id="frame"></iframe>
+    <div id="float-btn" onclick="toggle()">
+        <img src="https://img.icons8.com/color/48/000000/robot-2.png" width="40"/>
+    </div>
+    <div id="signal-card">
+        <div style="font-size: 10px; color: var(--primary); font-weight: bold; margin-bottom: 10px; text-align: left;">SINAL IA ATIVO</div>
+        <div class="grid-signals">
+            <div class="box" id="v" style="color:#fbff00;">...</div>
+            <div class="box">PROT: <span style="color:var(--primary)">1.50X</span></div>
+            <div class="box" id="t">00:00:00</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let db = JSON.parse(localStorage.getItem('users')) || [
+        { u: "0800", p: "BG", exp: null },
+        { u: "Breno", p: "123", exp: Date.now() + 259200000 }
+    ];
+
+    window.onload = () => setTimeout(() => { 
+        document.getElementById('splash').style.display='none'; 
+        setS('login-screen');
+    }, 3000);
+
+    function auth() {
+        const u = document.getElementById('u').value;
+        const p = document.getElementById('p').value;
+        if(u === "0800" && p === "0zZ") { setS('admin-screen'); refresh(); return; }
+        
+        const user = db.find(x => x.u === u && x.p === p);
+        if(user) {
+            if(user.exp && Date.now() > user.exp) alert("ACESSO EXPIRADO!");
+            else setS('box-selection');
+        } else alert("DADOS INVÁLIDOS!");
+    }
+
+    function add() {
+        const u = document.getElementById('new-u').value;
+        const p = document.getElementById('new-p').value;
+        const d = parseInt(document.getElementById('new-days').value);
+        if(u && p) {
+            db.push({ u, p, exp: d > 1000 ? null : Date.now() + (d * 86400000) });
+            localStorage.setItem('users', JSON.stringify(db));
+            refresh();
+        }
+    }
+
+    function del(i) { db.splice(i,1); localStorage.setItem('users', JSON.stringify(db)); refresh(); }
+
+    function refresh() {
+        document.getElementById('list').innerHTML = db.map((x,i) => `
+            <div class="user-item">
+                <span>${x.u}</span>
+                <button onclick="del(${i})" style="background:red; color:white; border:none; padding:5px; border-radius:5px;">SAIR</button>
+            </div>`).join('');
+    }
+
+    function setS(id) {
+        document.querySelectorAll('.screen').forEach(s => s.style.display='none');
+        if(id !== 'none') document.getElementById(id).style.display='flex';
+    }
+
+    function go(url) {
+        setS('none');
+        document.getElementById('site-wrapper').style.display='block';
+        document.getElementById('float-btn').style.display='flex';
+        document.getElementById('frame').src = url;
+        loop();
+    }
+
+    function toggle() {
+        const c = document.getElementById('signal-card');
+        c.style.display = (c.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function loop() {
+        setInterval(() => {
+            const n = new Date();
+            document.getElementById('t').innerText = n.toLocaleTimeString();
+            const sec = (n.getMinutes() * 60) + n.getSeconds();
+            if (sec % 90 < 20) {
+                const x = Math.floor(Math.random() * 5) + 2;
+                document.getElementById('v').innerHTML = `ENTRAR ➔ ${x}X`;
+            } else {
+                document.getElementById('v').innerText = "ANALISANDO";
+            }
+        }, 1000);
+    }
+
+    function adminLogin() { if(prompt("Senha:") === "0zZ") { setS('admin-screen'); refresh(); } }
+</script>
+</body>
+</html>
