@@ -3,40 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cashout Prime - Profissional</title>
+    <title>Cashout Prime</title>
     <style>
         :root { 
             --primary: #00ff00; 
             --secondary: #ff3b3b; 
             --bg-gradient: radial-gradient(circle at top, #0a3d26, #000);
-            --glass: rgba(0, 0, 0, 0.88);
+            --glass: rgba(0, 0, 0, 0.94);
         }
 
-        /* Reset Geral para qualquer ecrã */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body, html { 
-            margin: 0; padding: 0; width: 100%; height: 100%; 
+            width: 100%; height: 100%; 
             background: #000; font-family: 'Segoe UI', system-ui, sans-serif; 
             overflow: hidden; color: white;
         }
 
-        /* ANIMAÇÕES */
-        @keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        /* ANIMAÇÕES PERSONALIZADAS */
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 5px var(--primary); } 50% { box-shadow: 0 0 20px var(--primary); } 100% { box-shadow: 0 0 5px var(--primary); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px var(--primary); } 50% { box-shadow: 0 0 20px var(--primary); } }
 
-        /* SPLASH SCREEN RESPONSIVA */
+        /* SPLASH */
         #splash {
-            position: fixed; inset: 0; z-index: 20000;
+            position: fixed; inset: 0; z-index: 50000;
             background: #000; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .loader {
-            width: 60px; height: 60px; border: 4px solid #111; border-top: 4px solid var(--primary);
-            border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px;
+            animation: fadeIn 0.5s ease;
         }
 
-        /* TELAS (LOGIN, ADM, SELEÇÃO) */
+        /* TELAS UNIVERSAIS */
         .screen { 
             position: fixed; inset: 0; z-index: 10000; 
             background: var(--bg-gradient);
@@ -45,34 +40,36 @@
 
         .card { 
             background: var(--glass); padding: 30px; border-radius: 25px; 
-            border: 1px solid rgba(0, 255, 0, 0.2); width: 100%; max-width: 400px; 
-            text-align: center; backdrop-filter: blur(15px);
-            animation: fadeInScale 0.5s ease-out;
+            border: 1px solid rgba(0, 255, 0, 0.3); width: 100%; max-width: 380px; 
+            text-align: center; backdrop-filter: blur(20px);
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        h2 { color: var(--primary); text-transform: uppercase; margin-bottom: 20px; font-size: 1.5rem; }
+        /* DIÁLOGOS PERSONALIZADOS (MODAIS) */
+        .custom-dialog {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            z-index: 60000; display: none; align-items: center; justify-content: center; padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
 
         input, select { 
             width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; 
-            border: 1px solid #1a4d35; background: #05140d; color: white; 
-            font-size: 16px; outline: none; transition: 0.3s;
+            border: 1px solid #1a4d35; background: #05140d; color: white; font-size: 16px; outline: none;
         }
 
         .btn-go { 
             background: var(--primary); color: #000; padding: 16px; border: none; 
-            border-radius: 12px; width: 100%; font-weight: 800; cursor: pointer;
+            border-radius: 12px; width: 100%; font-weight: 900; cursor: pointer; 
             margin-top: 10px; text-transform: uppercase; transition: 0.3s;
         }
-        .btn-go:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
-        /* LISTA ADM */
-        .user-list { 
-            margin-top: 20px; max-height: 150px; overflow-y: auto; 
-            text-align: left; padding: 10px; background: rgba(0,0,0,0.4); border-radius: 10px;
+        /* PERFIL INFO */
+        .user-info {
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px;
+            margin-bottom: 20px; text-align: left; border-left: 4px solid var(--primary);
         }
-        .user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #1a4d35; }
 
-        /* INTERFACE DO SITE E OVERLAY */
+        /* INTERFACE FLUTUANTE */
         #site-wrapper { position: absolute; inset: 0; z-index: 1; display: none; }
         iframe { width: 100%; height: 100%; border: none; }
 
@@ -84,68 +81,81 @@
         }
 
         #signal-card { 
-            position: fixed; bottom: 105px; right: 20px; width: calc(100% - 40px); max-width: 350px;
-            background: var(--glass); border: 2px solid var(--secondary); border-radius: 20px; 
-            padding: 15px; display: none; z-index: 14000; animation: slideUp 0.4s ease-out;
-            backdrop-filter: blur(10px);
+            position: fixed; bottom: 105px; right: 20px; left: 20px; width: auto; max-width: 380px; margin-left: auto;
+            background: var(--glass); border: 2px solid var(--primary); border-radius: 20px; 
+            padding: 15px; display: none; z-index: 14000; animation: slideUp 0.4s ease;
         }
 
-        .grid-signals { display: flex; justify-content: space-between; gap: 8px; }
-        .box { 
-            border: 2px solid var(--primary); border-radius: 12px; padding: 12px 5px; 
-            flex: 1; text-align: center; font-size: 13px; font-weight: bold; 
-            background: rgba(0,0,0,0.8);
-        }
-
-        /* Responsividade para Tablets/Desktop */
-        @media (min-width: 768px) {
-            .card { max-width: 450px; }
-            #signal-card { right: 30px; bottom: 110px; }
-        }
+        .box { border: 1px solid var(--primary); border-radius: 10px; padding: 10px 5px; flex: 1; text-align: center; font-size: 12px; font-weight: bold; background: rgba(0,0,0,0.5); }
+        .box span { display: block; font-size: 9px; color: #888; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-<audio id="beep" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+<audio id="signal-sound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+<div id="my-alert" class="custom-dialog">
+    <div class="card" style="border-color: var(--secondary);">
+        <h3 id="alert-title" style="color:var(--secondary)">AVISO</h3>
+        <p id="alert-msg" style="margin: 20px 0;"></p>
+        <button class="btn-go" onclick="closeAlert()">OK</button>
+    </div>
+</div>
 
 <div id="splash">
-    <div class="loader"></div>
-    <div style="color:var(--primary); font-weight:bold; letter-spacing:3px;">CASHOUT PRIME</div>
+    <div style="color:var(--primary); font-weight:bold; letter-spacing:8px; font-size:26px;">CASHOUT PRIME</div>
+    <p style="font-size: 10px; margin-top: 10px; color: #444;">CARREGANDO SISTEMA...</p>
 </div>
 
 <div id="login-screen" class="screen">
     <div class="card">
-        <h2>Acesso Restrito</h2>
+        <h2 style="color:var(--primary)">Acesso</h2>
         <input type="text" id="u" placeholder="Usuário">
         <input type="password" id="p" placeholder="Senha">
         <button class="btn-go" onclick="auth()">ENTRAR</button>
-        <p style="font-size: 11px; margin-top: 20px; color: #444;" onclick="adminLogin()">ADM PANEL</p>
+        <p style="font-size: 11px; margin-top: 25px; color: #333; cursor:pointer;" onclick="setS('adm-auth-screen')">PAINEL ADMINISTRATIVO</p>
+    </div>
+</div>
+
+<div id="adm-auth-screen" class="screen">
+    <div class="card">
+        <h2 style="color:var(--primary)">ADM LOGIN</h2>
+        <input type="password" id="adm-key" placeholder="Senha Mestra">
+        <button class="btn-go" onclick="checkAdm()">VERIFICAR</button>
+        <button class="btn-go" style="background:transparent; color:white; border:1px solid #222;" onclick="setS('login-screen')">VOLTAR</button>
+    </div>
+</div>
+
+<div id="status-screen" class="screen">
+    <div class="card">
+        <h2 style="color:var(--primary)">PERFIL</h2>
+        <div class="user-info">
+            <div style="font-size: 10px; color: var(--primary);">OPERADOR ATIVO</div>
+            <div id="display-user" style="font-size: 20px; font-weight: 900; margin-bottom: 10px;">---</div>
+            <div style="font-size: 10px; color: var(--secondary);">TEMPO DE LICENÇA</div>
+            <div id="timer-countdown" style="font-size: 18px; font-weight: 800; color: #fff;">00:00:00</div>
+        </div>
+        <button class="btn-go" onclick="go('https://888bets.co.ao/')">888BET</button>
+        <button class="btn-go" onclick="go('https://elephantbet.co.ao/')">ELEPHANT BET</button>
+        <button class="btn-go" onclick="go('https://m.bantubet.co.ao/')">BANTUBET</button>
+        <p style="margin-top:15px; font-size:12px; color:#444; cursor:pointer;" onclick="location.reload()">SAIR DA CONTA</p>
     </div>
 </div>
 
 <div id="admin-screen" class="screen">
     <div class="card">
-        <h2>Administração</h2>
-        <input type="text" id="new-u" placeholder="Nome do Cliente">
-        <input type="password" id="new-p" placeholder="Senha">
-        <select id="new-days">
-            <option value="3">3 DIAS</option>
-            <option value="7">7 DIAS</option>
-            <option value="30">30 DIAS</option>
-            <option value="9999">VITALÍCIO</option>
+        <h2 style="color:var(--primary)">CADASTRO</h2>
+        <input type="text" id="new-u" placeholder="Novo Usuário">
+        <input type="password" id="new-p" placeholder="Nova Senha">
+        <select id="new-time">
+            <option value="60">1 MINUTO (TESTE)</option>
+            <option value="86400">24 HORAS</option>
+            <option value="604800">7 DIAS</option>
+            <option value="2592000">30 DIAS</option>
         </select>
-        <button class="btn-go" onclick="add()">CRIAR CONTA</button>
-        <div class="user-list" id="list"></div>
+        <button class="btn-go" onclick="add()">GERAR ACESSO</button>
+        <div id="list" style="margin-top:15px; max-height:120px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius: 10px; text-align: left;"></div>
         <button class="btn-go" style="background:transparent; color:white; border:1px solid #444;" onclick="setS('login-screen')">VOLTAR</button>
-    </div>
-</div>
-
-<div id="box-selection" class="screen">
-    <div class="card">
-        <h2>ESCOLHA A BANCA</h2>
-        <button class="btn-go" onclick="go('https://888bets.co.ao/')">888BET</button>
-        <button class="btn-go" onclick="go('https://elephantbet.co.ao/')">ELEPHANT BET</button>
-        <button class="btn-go" onclick="go('https://bantubet.co.ao/')">BANTUBET</button>
     </div>
 </div>
 
@@ -155,58 +165,99 @@
         <img src="https://img.icons8.com/color/48/000000/robot-2.png" width="40"/>
     </div>
     <div id="signal-card">
-        <div style="font-size: 10px; color: var(--primary); font-weight: bold; margin-bottom: 10px; text-align: left;">SINAL IA ATIVO</div>
-        <div class="grid-signals">
-            <div class="box" id="v" style="color:#fbff00;">...</div>
-            <div class="box">PROT: <span style="color:var(--primary)">1.50X</span></div>
-            <div class="box" id="t">00:00:00</div>
+        <div style="display: flex; gap: 8px;">
+            <div class="box"><span>PRÓXIMO</span><div id="v-time">--:--</div></div>
+            <div class="box"><span>SAÍDA</span><div id="v-odds" style="color:#fbff00;">...</div></div>
+            <div class="box"><span>PROTEÇÃO</span><div id="v-prot">...</div></div>
         </div>
+        <div style="font-size: 10px; color: #555; text-align: center; margin-top: 10px;" id="clock-real">00:00:00</div>
     </div>
 </div>
 
 <script>
-    let db = JSON.parse(localStorage.getItem('users')) || [
-        { u: "0800", p: "BG", exp: null },
-        { u: "Breno", p: "123", exp: Date.now() + 259200000 }
-    ];
+    let db = JSON.parse(localStorage.getItem('cp_users')) || [];
+    let activeUser = null;
+    let countdownInterval = null;
 
+    // Splash e Inicialização
     window.onload = () => setTimeout(() => { 
         document.getElementById('splash').style.display='none'; 
         setS('login-screen');
-    }, 3000);
+    }, 2500);
+
+    // Diálogos Personalizados
+    function showMyAlert(title, msg) {
+        document.getElementById('alert-title').innerText = title;
+        document.getElementById('alert-msg').innerText = msg;
+        document.getElementById('my-alert').style.display = 'flex';
+    }
+    function closeAlert() { document.getElementById('my-alert').style.display = 'none'; }
 
     function auth() {
         const u = document.getElementById('u').value;
         const p = document.getElementById('p').value;
-        if(u === "0800" && p === "0zZ") { setS('admin-screen'); refresh(); return; }
-        
         const user = db.find(x => x.u === u && x.p === p);
+        
         if(user) {
-            if(user.exp && Date.now() > user.exp) alert("ACESSO EXPIRADO!");
-            else setS('box-selection');
-        } else alert("DADOS INVÁLIDOS!");
+            if(user.expiry < Date.now()) {
+                showMyAlert("BLOQUEADO", "Sua licença expirou! Contacte o administrador.");
+                return;
+            }
+            activeUser = user;
+            document.getElementById('display-user').innerText = user.u;
+            startCountdown();
+            setS('status-screen');
+        } else { 
+            showMyAlert("ERRO", "Usuário ou Senha incorretos.");
+        }
+    }
+
+    function checkAdm() {
+        if(document.getElementById('adm-key').value === "0zZ") {
+            setS('admin-screen');
+            refresh();
+        } else {
+            showMyAlert("NEGADO", "Chave administrativa inválida.");
+        }
+    }
+
+    function startCountdown() {
+        if(countdownInterval) clearInterval(countdownInterval);
+        const updateTimer = () => {
+            const diff = activeUser.expiry - Date.now();
+            if(diff <= 0) {
+                clearInterval(countdownInterval);
+                location.reload();
+                return;
+            }
+            const h = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const m = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const s = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            document.getElementById('timer-countdown').innerText = `${h}:${m}:${s}`;
+        };
+        updateTimer();
+        countdownInterval = setInterval(updateTimer, 1000);
     }
 
     function add() {
         const u = document.getElementById('new-u').value;
         const p = document.getElementById('new-p').value;
-        const d = parseInt(document.getElementById('new-days').value);
+        const sec = parseInt(document.getElementById('new-time').value);
         if(u && p) {
-            db.push({ u, p, exp: d > 1000 ? null : Date.now() + (d * 86400000) });
-            localStorage.setItem('users', JSON.stringify(db));
+            db.push({ u, p, expiry: Date.now() + (sec * 1000) });
+            localStorage.setItem('cp_users', JSON.stringify(db));
             refresh();
+            showMyAlert("SUCESSO", "Usuário criado com sucesso!");
         }
     }
 
-    function del(i) { db.splice(i,1); localStorage.setItem('users', JSON.stringify(db)); refresh(); }
-
     function refresh() {
         document.getElementById('list').innerHTML = db.map((x,i) => `
-            <div class="user-item">
-                <span>${x.u}</span>
-                <button onclick="del(${i})" style="background:red; color:white; border:none; padding:5px; border-radius:5px;">SAIR</button>
+            <div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #111; font-size:11px;">
+                <span>${x.u}</span><span onclick="del(${i})" style="color:red; font-weight:bold;">REMOVER</span>
             </div>`).join('');
     }
+    function del(i) { db.splice(i,1); localStorage.setItem('cp_users', JSON.stringify(db)); refresh(); }
 
     function setS(id) {
         document.querySelectorAll('.screen').forEach(s => s.style.display='none');
@@ -218,7 +269,7 @@
         document.getElementById('site-wrapper').style.display='block';
         document.getElementById('float-btn').style.display='flex';
         document.getElementById('frame').src = url;
-        loop();
+        startIA();
     }
 
     function toggle() {
@@ -226,21 +277,27 @@
         c.style.display = (c.style.display === 'block') ? 'none' : 'block';
     }
 
-    function loop() {
-        setInterval(() => {
-            const n = new Date();
-            document.getElementById('t').innerText = n.toLocaleTimeString();
-            const sec = (n.getMinutes() * 60) + n.getSeconds();
-            if (sec % 90 < 20) {
-                const x = Math.floor(Math.random() * 5) + 2;
-                document.getElementById('v').innerHTML = `ENTRAR ➔ ${x}X`;
-            } else {
-                document.getElementById('v').innerText = "ANALISANDO";
-            }
-        }, 1000);
-    }
+    function startIA() {
+        const sound = document.getElementById('signal-sound');
+        const update = () => {
+            const tr = new Date();
+            let nextM = tr.getMinutes() + 1;
+            let nextH = tr.getHours();
+            if(nextM >= 60) { nextM = 0; nextH = (nextH+1 >= 24) ? 0 : nextH+1; }
 
-    function adminLogin() { if(prompt("Senha:") === "0zZ") { setS('admin-screen'); refresh(); } }
+            const out = (Math.random() * (2.6 - 1.4) + 1.4).toFixed(2);
+            const p1 = Math.floor(Math.random() * 2) + 1;
+            const p2 = Math.floor(Math.random() * 9);
+
+            document.getElementById('v-time').innerText = `${nextH}:${nextM.toString().padStart(2, '0')} ➔`;
+            document.getElementById('v-odds').innerText = `${out}X`;
+            document.getElementById('v-prot').innerText = `${p1}.${p2}0X`;
+            sound.play().catch(() => {});
+        };
+        setInterval(() => { document.getElementById('clock-real').innerText = new Date().toLocaleTimeString(); }, 1000);
+        update();
+        setInterval(update, 90000); 
+    }
 </script>
 </body>
 </html>
