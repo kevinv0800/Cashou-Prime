@@ -2,569 +2,935 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Oracle Omni V19 - Elite Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Hacker 0800</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #030303; 
-            --surface: #121212; 
-            --surface-glass: rgba(20, 20, 20, 0.7);
-            --border: rgba(255, 255, 255, 0.08);
-            --primary: #8b5cf6; 
-            --primary-glow: rgba(139, 92, 246, 0.4);
-            --accent: #06b6d4;
-            --success: #10b981; 
-            --danger: #ef4444;
-            --text: #ffffff; 
-            --text-dim: #9ca3af;
-            --gradient-btn: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+        /* Reset e Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
         }
 
-        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding-bottom: 90px; 
-            overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        body {
+            background: linear-gradient(135deg, #0f0c20 0%, #15102a 50%, #060210 100%);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 20px 10px;
         }
 
-        /* --- UTILITÁRIOS --- */
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .flex-center { display: flex; align-items: center; justify-content: center; }
-        .hidden { display: none !important; }
-        
-        /* --- ANIMAÇÕES --- */
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-        @keyframes pulse-glow { 0% { box-shadow: 0 0 5px var(--primary-glow); } 50% { box-shadow: 0 0 20px var(--primary-glow); } 100% { box-shadow: 0 0 5px var(--primary-glow); } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* Luzes de Fundo */
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            opacity: 0.35;
+        }
+        body::before { background: #00ff88; top: -5%; left: -5%; }
+        body::after { background: #ff007f; bottom: -5%; right: -5%; }
 
-        /* --- SPLASH SCREEN --- */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; flex-direction: column; }
-        .loader { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s infinite linear; }
+        /* Container Principal com adaptação para PC */
+        .container {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 28px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            z-index: 1;
+            position: relative;
+            min-height: 520px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: max-width 0.5s ease, display 0.5s ease;
+        }
 
-        /* --- LOGIN --- */
-        #auth-screen { position: fixed; inset: 0; background: #000; z-index: 5000; padding: 20px; }
-        .auth-bg-orb { position: absolute; width: 300px; height: 300px; background: var(--primary); filter: blur(120px); opacity: 0.2; border-radius: 50%; top: -50px; left: -50px; }
-        .auth-card { 
-            position: relative; z-index: 10; width: 100%; max-width: 380px; 
-            background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(20px);
-            border: 1px solid var(--border); border-radius: 24px; padding: 32px 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        /* Animação de Hélice Girando */
+        .propeller-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
         }
-        .input-group { position: relative; margin-bottom: 16px; }
-        .custom-input { 
-            width: 100%; background: #0a0a0a; border: 1px solid var(--border); 
-            color: #fff; padding: 16px; border-radius: 14px; font-size: 0.95rem;
-            transition: all 0.3s ease;
+        .propeller {
+            width: 50px;
+            height: 50px;
+            border: 4px dashed #00ff88;
+            border-radius: 50%;
+            animation: spinPropeller 2s linear infinite;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
-        .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1); }
-        
-        /* --- BOTÕES --- */
-        .btn { 
-            width: 100%; padding: 16px; border: none; border-radius: 14px; 
-            font-weight: 700; font-size: 0.95rem; cursor: pointer; color: #fff;
-            transition: transform 0.1s; position: relative; overflow: hidden;
+        .propeller::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #ff007f;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
         }
-        .btn:active { transform: scale(0.98); }
-        .btn-primary { background: var(--gradient-btn); box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); }
-        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
-        .btn-wa { background: #25D366; color: #000; font-weight: 800; font-size: 0.75rem; padding: 8px 16px; border-radius: 50px; text-decoration: none; display: flex; align-items: center; gap: 6px; }
 
-        /* --- HEADER & NAV --- */
-        header { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px; }
-        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; }
-        .logo span { color: var(--primary); }
-        
-        .navbar { 
-            position: fixed; bottom: 20px; left: 20px; right: 20px; 
-            background: rgba(20, 20, 20, 0.9); backdrop-filter: blur(15px);
-            border: 1px solid var(--border); border-radius: 20px; 
-            display: flex; justify-content: space-around; padding: 14px 0; 
-            z-index: 4000; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* Títulos */
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #00ff88, #0077ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
         }
-        .nav-item { color: #555; font-size: 1.3rem; position: relative; transition: color 0.3s; cursor: pointer; }
-        .nav-item.active { color: var(--text); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: var(--primary); border-radius: 50%; }
-
-        /* --- CARDS & WIDGETS --- */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 20px; margin-bottom: 16px; position: relative; overflow: hidden; }
-        
-        /* Match Select */
-        .match-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 15px; align-items: center; }
-        .team-box { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .flag-circle { 
-            width: 64px; height: 64px; border-radius: 50%; background: #1a1a1a; 
-            border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem; font-weight: 800; color: #444; overflow: hidden;
-            transition: border-color 0.3s;
+        .title-hacker {
+            background: linear-gradient(45deg, #00ff88, #ff007f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .flag-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .flag-circle.active { border-color: var(--primary); color: #fff; background: var(--primary-glow); }
-        .vs-badge { font-weight: 900; color: #333; font-style: italic; font-size: 1.2rem; }
-        .team-input { 
-            width: 100%; background: transparent; border: none; border-bottom: 2px solid var(--border);
-            color: #fff; text-align: center; font-weight: 600; padding: 5px; text-transform: uppercase;
+        .subtitle {
             font-size: 0.85rem;
+            color: #a0aec0;
+            margin-bottom: 25px;
         }
-        .team-input:focus { border-color: var(--primary); }
 
-        /* Results */
-        .result-card { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid var(--primary); background: linear-gradient(180deg, rgba(124, 58, 237, 0.05) 0%, rgba(0,0,0,0) 100%); }
-        .stat-row { margin-bottom: 12px; }
-        .stat-header { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; color: var(--text-dim); }
-        .progress-bg { height: 8px; background: #222; border-radius: 4px; overflow: hidden; }
-        .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease-out; }
+        /* Formulário Adaptável */
+        .input-group-container {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .input-group-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #00ff88;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .input-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .input-field {
+            flex: 1;
+            min-width: 70px;
+            display: flex;
+            flex-direction: column;
+        }
+        .input-field.main-input {
+            flex: 2;
+            min-width: 120px;
+        }
+        .input-field label {
+            font-size: 0.7rem;
+            color: #a0aec0;
+            margin-bottom: 4px;
+        }
+        .input-field input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 0.9rem;
+            outline: none;
+            text-align: center;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .input-field input:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+
+        /* ==================== TELA 1: CARREGAMENTO INICIAL ==================== */
+        #screen-splash {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .cyber-loader {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 60px;
+            height: 50px;
+            margin: 30px 0;
+        }
+        .cyber-bar {
+            width: 8px;
+            height: 100%;
+            background: #00ff88;
+            border-radius: 4px;
+            animation: bounceLoader 1s ease-in-out infinite;
+            box-shadow: 0 0 15px #00ff88;
+        }
+        .cyber-bar:nth-child(2) { background: #00bcff; animation-delay: 0.2s; box-shadow: 0 0 15px #00bcff; }
+        .cyber-bar:nth-child(3) { background: #ff007f; animation-delay: 0.4s; box-shadow: 0 0 15px #ff007f; }
         
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .stat-box { background: rgba(255,255,255,0.03); padding: 12px; border-radius: 12px; text-align: center; border: 1px solid var(--border); }
-        .stat-val { font-size: 1.1rem; font-weight: 800; color: var(--accent); }
-        .stat-lbl { font-size: 0.6rem; text-transform: uppercase; color: #666; font-weight: 700; margin-top: 4px; }
+        .splash-text {
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #a0aec0;
+            animation: pulseText 1.5s infinite;
+        }
 
-        /* Chat */
-        .chat-container { height: calc(100vh - 200px); display: flex; flex-direction: column; }
-        .chat-area { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 0.9rem; line-height: 1.4; position: relative; animation: slideUp 0.3s ease; }
-        .msg-me { align-self: flex-end; background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
-        .msg-other { align-self: flex-start; background: #1e1e1e; border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-        .msg-user { font-size: 0.65rem; opacity: 0.6; margin-bottom: 4px; display: block; font-weight: 600; }
+        /* ==================== TELA 2: ESCOLHA DA CASA ==================== */
+        #screen-select {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .house-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .house-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .house-card:hover {
+            background: rgba(0, 255, 136, 0.08);
+            border-color: #00ff88;
+            transform: translateX(5px);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+        }
+        .house-card::after {
+            content: '➔';
+            font-size: 0.9rem;
+            color: #00ff88;
+            opacity: 0.6;
+        }
+
+        /* ==================== TELA 3: GERADOR DE SINAIS ==================== */
+        #screen-dashboard {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .dashboard-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .dashboard-main {
+            flex: 1;
+        }
+        .dashboard-sidebar {
+            display: none;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 15px;
+            text-align: left;
+        }
+        .house-badge {
+            background: rgba(0, 119, 255, 0.15);
+            color: #00bcff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 119, 255, 0.3);
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .signal-box {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px dashed rgba(255, 255, 255, 0.12);
+            border-radius: 18px;
+            padding: 20px;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .mini-loader {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(0, 255, 136, 0.1);
+            border-left-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 12px;
+        }
+        .signal-data {
+            display: none;
+            width: 100%;
+            animation: slideUp 0.4s ease forwards;
+        }
+        .signal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.95rem;
+        }
+        .signal-item span:first-child { color: #a0aec0; }
+        .signal-item span:last-child { font-weight: 600; }
         
-        /* Modal */
-        #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9000; backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-box { background: #181818; border: 1px solid #333; padding: 30px; border-radius: 24px; text-align: center; max-width: 320px; width: 100%; animation: float 6s infinite ease-in-out; }
+        .highlight { color: #00ff88 !important; text-shadow: 0 0 10px rgba(0, 255, 136, 0.4); }
+        .highlight-pink { color: #ff007f !important; text-shadow: 0 0 10px rgba(255, 0, 127, 0.4); font-weight: 800; }
+        
+        .badge-protection {
+            background: rgba(255, 165, 0, 0.15);
+            color: #ffa500 !important;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            border: 1px solid rgba(255, 165, 0, 0.25);
+        }
 
+        /* Layout de Previsões Múltiplas */
+        .pink-list {
+            width: 100%;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .pink-entry {
+            background: rgba(255, 0, 127, 0.05);
+            border: 1px solid rgba(255, 0, 127, 0.15);
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* Estilos do Histórico */
+        #history-list {
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+            max-height: 240px; 
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+        #history-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        #history-list::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        #history-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        /* ==================== SEÇÃO SOBRE O BOT (MODAL CUSTOMIZADO) ==================== */
+        #about-section {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+            text-align: left;
+        }
+        .about-text {
+            font-size: 0.85rem;
+            color: #d1d5db;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 12px;
+            border-left: 3px solid #ff007f;
+        }
+        .creator-badge {
+            background: linear-gradient(45deg, #7928ca, #ff0080);
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 12px rgba(255, 0, 128, 0.2);
+        }
+
+        /* Botões */
+        .btn {
+            background: linear-gradient(135deg, #00ff88 0%, #00bc70 100%);
+            color: #060210;
+            border: none;
+            padding: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.25);
+            margin-bottom: 10px;
+        }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 255, 136, 0.45); }
+        .btn:disabled {
+            background: #2a273b;
+            color: #718096;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .btn-pink {
+            background: linear-gradient(135deg, #ff007f 0%, #ff00cc 100%);
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(255, 0, 127, 0.25);
+        }
+        .btn-pink:hover:not(:disabled) { box-shadow: 0 8px 22px rgba(255, 0, 127, 0.45); }
+
+        .btn-placard {
+            background: linear-gradient(135deg, #0055ff 0%, #0099ff 100%);
+            color: #ffffff;
+            box-shadow: 0 5px 15px rgba(0, 85, 255, 0.25);
+        }
+
+        .btn-info {
+            background: rgba(255, 255, 255, 0.05);
+            color: #a0aec0;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            font-size: 0.85rem;
+            padding: 10px;
+        }
+        .btn-info:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+
+        .btn-back {
+            background: transparent;
+            color: #a0aec0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: none;
+            padding: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+        .btn-back:hover { background: rgba(255, 255, 255, 0.05); color: #fff; }
+
+        /* Alerta de validação */
+        .error-message {
+            color: #ff007f;
+            font-size: 0.8rem;
+            margin-top: -5px;
+            margin-bottom: 10px;
+            display: none;
+            font-weight: 600;
+        }
+
+        /* Animações Keyframes */
+        @keyframes spinPropeller {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes bounceLoader {
+            0%, 100% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1.1); }
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ==================== ADAPTAÇÃO PARA PC (Telas Médias e Grandes) ==================== */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 820px; /* Alarga o container no PC */
+                padding: 35px 30px;
+            }
+            .dashboard-layout {
+                flex-direction: row; /* Coloca os elementos lado a lado */
+                gap: 25px;
+                text-align: left;
+            }
+            .dashboard-main {
+                flex: 1.2;
+            }
+            .dashboard-sidebar {
+                display: block !important; /* Mostra o Histórico Lateral fixo apenas no PC */
+                max-width: 320px;
+            }
+            /* Ocultar o histórico móvel sob o formulário caso esteja no PC */
+            #mobile-history-container {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div id="splash" class="flex-center">
-    <div class="loader"></div>
-    <div style="margin-top:20px; font-weight:800; letter-spacing: 2px; font-size:0.8rem;">INITIALIZING V19...</div>
-</div>
-
-<div id="modal-overlay">
-    <div class="modal-box">
-        <i class="fas fa-shield-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 20px;"></i>
-        <h3 id="modal-title" style="margin: 0 0 10px 0;">ATENÇÃO</h3>
-        <p id="modal-msg" style="color: var(--text-dim); font-size: 0.9rem; margin-bottom: 25px;">Mensagem aqui.</p>
-        <button class="btn btn-outline" onclick="closeModal()">ENTENDIDO</button>
-    </div>
-</div>
-
-<div id="auth-screen" class="flex-center hidden">
-    <div class="auth-bg-orb"></div>
-    <div class="auth-card">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h1 style="margin: 0; font-size: 2rem;">ORACLE</h1>
-            <p style="margin: 5px 0 0 0; color: var(--primary); font-weight: 600; letter-spacing: 3px; font-size: 0.8rem;">MASTER EDITION</p>
-        </div>
+    <div class="container" id="main-container">
         
-        <div class="input-group">
-            <input type="text" id="login-user" class="custom-input" placeholder="Usuário">
-            <i class="fas fa-user" style="position: absolute; right: 15px; top: 18px; color: #444;"></i>
-        </div>
-        <div class="input-group">
-            <input type="password" id="login-pass" class="custom-input" placeholder="Senha">
-            <i class="fas fa-eye" onclick="togglePass()" style="position: absolute; right: 15px; top: 18px; color: #444; cursor: pointer;"></i>
+        <!-- ==================== TELA 1: CARREGAMENTO INICIAL ==================== -->
+        <div id="screen-splash">
+            <div class="propeller-wrapper">
+                <div class="propeller"></div>
+            </div>
+            <h1 class="title-hacker">BOT HACKER 0800</h1>
+            <div class="cyber-loader">
+                <div class="cyber-bar"></div>
+                <div class="cyber-bar"></div>
+                <div class="cyber-bar"></div>
+            </div>
+            <div class="splash-text">CONECTANDO AO ALGORITMO...</div>
         </div>
 
-        <button class="btn btn-primary" onclick="auth('login')">ACESSAR SISTEMA</button>
-        
-        <div style="text-align: center; margin-top: 20px;">
-            <span style="font-size: 0.8rem; color: #666; cursor: pointer;" onclick="auth('register')">Não tem acesso? <b>Criar conta</b></span>
+        <!-- ==================== TELA 2: ESCOLHA DA CASA ==================== -->
+        <div id="screen-select">
+            <div class="propeller-wrapper">
+                <div class="propeller"></div>
+            </div>
+            <h1 class="title-hacker">BOT HACKER 0800</h1>
+            <p class="subtitle">Selecione a plataforma para injetar os scripts</p>
+            <div class="house-list">
+                <div class="house-card" onclick="selectHouse('Elephant Bet')">🐘 Elephant Bet</div>
+                <div class="house-card" onclick="selectHouse('Placard')">📋 Placard</div>
+                <div class="house-card" onclick="selectHouse('888bet')">💎 888bet</div>
+            </div>
+            <button class="btn btn-info" onclick="showAbout()">ℹ️ SOBRE O BOT HACKER</button>
         </div>
-    </div>
-</div>
 
-<div id="app" class="hidden">
-    <header>
-        <div class="logo">ORACLE<span>.AI</span></div>
-        <a href="#" class="btn-wa"><i class="fab fa-whatsapp"></i> VIP</a>
-    </header>
+        <!-- ==================== TELA 3: GERADOR DE SINAIS ==================== -->
+        <div id="screen-dashboard">
+            <h1 style="font-size: 1.5rem;" class="title-hacker">BOT HACKER 0800</h1>
+            <div><span class="house-badge" id="selected-house-label">Plataforma</span></div>
 
-    <div style="padding: 0 20px;">
-        
-        <div id="view-home" class="view-section">
-            <div class="card">
-                <div class="match-grid">
-                    <div class="team-box">
-                        <div class="flag-circle" id="flag-h">H</div>
-                        <input class="team-input" id="input-h" placeholder="CASA" oninput="updateFlag('h')">
+            <div class="dashboard-layout">
+                
+                <!-- Coluna Esquerda: Formulários e Resultados -->
+                <div class="dashboard-main">
+                    <!-- Botão Especial para Placard -->
+                    <button class="btn btn-placard" id="btn-open-placard" style="display: none;" onclick="openPlacardLink()">🌍 ABRIR A CASA DE APOSTA</button>
+
+                    <!-- Formulário de Entrada Obrigatória -->
+                    <div class="input-group-container">
+                        <div class="input-group-title">🔬 Dados da Última Vela</div>
+                        <div class="input-row">
+                            <div class="input-field main-input">
+                                <label>Vela Positiva (X)</label>
+                                <input type="number" id="input-vela" placeholder="Ex: 2.50" step="0.01" min="1">
+                            </div>
+                            <div class="input-field">
+                                <label>Hora</label>
+                                <input type="number" id="input-hora" placeholder="09" min="0" max="23">
+                            </div>
+                            <div class="input-field">
+                                <label>Minuto</label>
+                                <input type="number" id="input-min" placeholder="46" min="0" max="59">
+                            </div>
+                        </div>
                     </div>
-                    <div class="vs-badge">VS</div>
-                    <div class="team-box">
-                        <div class="flag-circle" id="flag-a">A</div>
-                        <input class="team-input" id="input-a" placeholder="FORA" oninput="updateFlag('a')">
+                    <div class="error-message" id="validation-error">Preencha todos os campos antes de prever!</div>
+
+                    <div class="signal-box">
+                        <div id="dashboard-placeholder" style="color: #718096; font-size: 0.9rem;">
+                            Insira os dados acima para iniciar a varredura do padrão.
+                        </div>
+                        
+                        <div class="mini-loader" id="mini-loader"></div>
+                        <div id="mini-loader-text" style="display:none; color: #00ff88; font-size: 0.85rem; letter-spacing: 1px; margin-top: 10px;">Processando dados...</div>
+
+                        <!-- SINAL NORMAL -->
+                        <div class="signal-data" id="signal-results">
+                            <div class="signal-item">
+                                <span>Padrão Calculado</span>
+                                <span class="highlight">CRASH / AVIATOR</span>
+                            </div>
+                            <div class="signal-item">
+                                <span>Entrada Recomendada</span>
+                                <span id="target-time" style="color: #00bcff; font-size: 1.1rem; font-weight: 800;">--</span>
+                            </div>
+                            <div class="signal-item">
+                                <span>Previsão de Saída</span>
+                                <span id="target-multiplier" style="color: #00ff88; font-size: 1.1rem; font-weight: 800;">--</span>
+                            </div>
+                            <div class="signal-item">
+                                <span>Segurança Recomendada</span>
+                                <span class="badge-protection" id="target-protection">--</span>
+                            </div>
+                        </div>
+
+                        <!-- SINAL VELAS ROSAS -->
+                        <div class="signal-data" id="pink-results">
+                            <div class="pink-list" id="pink-entries-list"></div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Execução -->
+                    <button class="btn" id="btn-action" onclick="triggerSignal()">PREVER ENTRADA NORMAL</button>
+                    <button class="btn btn-pink" id="btn-pink" onclick="triggerPinkSignal()">🌸 VELAS ROSAS PRÓXIMOS</button>
+                    
+                    <!-- Histórico Versão Mobile (Aparece apenas abaixo do botão no celular) -->
+                    <div class="input-group-container" id="mobile-history-container" style="display: none; margin-top: 15px; text-align: left;">
+                        <div class="input-group-title" style="color: #ff007f;">📜 Velas Já Previstas</div>
+                        <div class="mobile-history-list" id="mobile-history-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 150px; overflow-y: auto;">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-back" style="margin-top: 15px;" onclick="goToSelection()">← Mudar de Casa</button>
+                </div>
+
+                <!-- Coluna Direita (Sidebar): Histórico Fixo para Versão PC -->
+                <div class="dashboard-sidebar" id="pc-history-container">
+                    <div class="input-group-title" style="color: #ff007f; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">📜 Velas Já Previstas</div>
+                    <div id="history-list">
+                        <div id="history-empty" style="color: #718096; font-size: 0.85rem; text-align: center; margin-top: 50px;">
+                            Nenhuma previsão feita ainda nesta sessão.
+                        </div>
                     </div>
                 </div>
-                <button class="btn btn-primary" id="btn-generate" onclick="generateSignal()" style="margin-top: 25px;">
-                    <i class="fas fa-bolt"></i> GERAR INTELIGÊNCIA
-                </button>
-            </div>
 
-            <div id="result-area" style="display: none;"></div>
-        </div>
-
-        <div id="view-chat" class="view-section hidden">
-            <div class="card chat-container" style="padding: 0; background: #050505;">
-                <div class="chat-area" id="chat-feed">
-                    </div>
-                <div style="padding: 15px; background: #121212; border-top: 1px solid #222; display: flex; gap: 10px;">
-                    <input id="chat-input" type="text" style="flex: 1; background: #222; border: none; padding: 12px; border-radius: 20px; color: #fff;" placeholder="Digite algo...">
-                    <button onclick="sendMsg()" style="width: 45px; height: 45px; border-radius: 50%; border: none; background: var(--primary); color: #fff;"><i class="fas fa-paper-plane"></i></button>
-                </div>
             </div>
         </div>
 
-        <div id="view-history" class="view-section hidden">
-            <h3 style="margin: 0 0 15px 5px; font-size: 1.1rem;">Últimas Análises</h3>
-            <div id="history-list"></div>
-        </div>
-
-        <div id="view-profile" class="view-section hidden">
-            <div class="card" style="text-align: center; padding: 40px 20px;">
-                <div style="width: 80px; height: 80px; background: var(--primary); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 800;" id="profile-initial">U</div>
-                <h2 id="profile-name" style="margin: 0;">Usuário</h2>
-                <p style="color: var(--text-dim); font-size: 0.8rem;">Membro desde 2024</p>
-                <div style="margin-top: 30px; display: grid; gap: 10px;">
-                    <button class="btn btn-outline" onclick="logout()" style="border-color: var(--danger); color: var(--danger);">SAIR DA CONTA</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="navbar">
-        <div class="nav-item active" onclick="nav('home')"><i class="fas fa-home"></i></div>
-        <div class="nav-item" onclick="nav('chat')"><i class="fas fa-comment-alt"></i></div>
-        <div class="nav-item" onclick="nav('history')"><i class="fas fa-history"></i></div>
-        <div class="nav-item" onclick="nav('profile')"><i class="fas fa-user"></i></div>
-    </div>
-</div>
-
-<script>
-    // --- DADOS & CONFIG ---
-    const DB_LOGOS = {
-        "flamengo": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Flamengo_braz_logo.svg",
-        "palmeiras": "https://upload.wikimedia.org/wikipedia/commons/1/10/Palmeiras_logo.svg",
-        "corinthians": "https://upload.wikimedia.org/wikipedia/pt/b/b4/Corinthians_simbolo.png",
-        "sao paulo": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Brasao_do_Sao_Paulo_Futebol_Clube.svg",
-        "real madrid": "https://upload.wikimedia.org/wikipedia/pt/9/98/Real_Madrid.png",
-        "barcelona": "https://upload.wikimedia.org/wikipedia/pt/4/43/FCBarcelona.svg",
-        "city": "https://upload.wikimedia.org/wikipedia/pt/0/02/Manchester_City_Football_Club.png",
-        "liverpool": "https://upload.wikimedia.org/wikipedia/pt/thumb/0/0c/Liverpool_FC.svg/1200px-Liverpool_FC.svg.png",
-        "psg": "https://upload.wikimedia.org/wikipedia/pt/a/a7/Paris_Saint-Germain_F.C..png",
-        "bayern": "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg"
-    };
-
-    let currentUser = localStorage.getItem('oracle_user');
-    let fakeChatInterval;
-
-    // --- INICIALIZAÇÃO ---
-    window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('splash').style.display = 'none';
-            if(currentUser) {
-                initApp();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('auth-screen').style.display = 'flex';
-            }
-        }, 1500);
-    };
-
-    // --- AUTENTICAÇÃO ---
-    function auth(action) {
-        const u = document.getElementById('login-user').value.trim();
-        const p = document.getElementById('login-pass').value.trim();
-
-        if(!u || !p) return showModal("Campos vazios", "Por favor, preencha usuário e senha.");
-
-        if(action === 'register') {
-            if(localStorage.getItem('user_' + u)) return showModal("Erro", "Usuário já existe.");
-            localStorage.setItem('user_' + u, p);
-            showModal("Sucesso", "Conta criada! Faça login.");
-        } else {
-            if(localStorage.getItem('user_' + u) === p) {
-                localStorage.setItem('oracle_user', u);
-                location.reload();
-            } else {
-                showModal("Erro", "Credenciais inválidas.");
-            }
-        }
-    }
-
-    function logout() {
-        localStorage.removeItem('oracle_user');
-        location.reload();
-    }
-
-    function initApp() {
-        document.getElementById('auth-screen').style.display = 'none';
-        document.getElementById('app').classList.remove('hidden');
-        
-        document.getElementById('profile-name').innerText = currentUser.toUpperCase();
-        document.getElementById('profile-initial').innerText = currentUser[0].toUpperCase();
-        
-        loadHistory();
-        loadChat();
-        startFakeChat();
-    }
-
-    // --- NAVEGAÇÃO ---
-    function nav(view) {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-        document.getElementById('view-' + view).classList.remove('hidden');
-        
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-
-        if(view === 'history') loadHistory();
-    }
-
-    // --- LÓGICA DE IMAGENS ---
-    function updateFlag(side) {
-        const input = document.getElementById(`input-${side}`);
-        const circle = document.getElementById(`flag-${side}`);
-        const val = input.value.toLowerCase().trim();
-
-        let found = false;
-        // Busca simples por substring
-        for(let key in DB_LOGOS) {
-            if(val.length > 2 && key.includes(val)) {
-                circle.innerHTML = `<img src="${DB_LOGOS[key]}">`;
-                circle.classList.add('active');
-                found = true;
-                break;
-            }
-        }
-
-        if(!found) {
-            circle.innerHTML = val.length > 0 ? val.substring(0, 2).toUpperCase() : (side === 'h' ? 'H' : 'A');
-            circle.classList.remove('active');
-            if(val.length > 0) circle.style.borderColor = 'var(--text-dim)';
-        }
-    }
-
-    // --- GERADOR DE SINAIS (CORE) ---
-    function generateSignal() {
-        const h = document.getElementById('input-h').value.toUpperCase();
-        const a = document.getElementById('input-a').value.toUpperCase();
-
-        if(h.length < 2 || a.length < 2) return showModal("Dados Insuficientes", "Preencha os nomes dos times.");
-
-        // Bloqueio de duplicidade
-        const last = JSON.parse(localStorage.getItem('oracle_last_match') || '{}');
-        if(last.match === `${h} vs ${a}` && (Date.now() - last.time) < 60000) {
-            return showModal("Aguarde", "Análise recente já realizada para este confronto.");
-        }
-
-        const btn = document.getElementById('btn-generate');
-        const resArea = document.getElementById('result-area');
-        
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-circle-notch fa-spin"></i> ANALISANDO DADOS...`;
-        resArea.style.display = 'none';
-
-        // Algoritmo Simulado
-        setTimeout(() => {
-            const probH = Math.floor(Math.random() * 45) + 30;
-            const probA = Math.floor(Math.random() * (90 - probH));
-            const probD = 100 - probH - probA;
+        <!-- ==================== TELA 4: SOBRE O BOT ==================== -->
+        <div id="about-section">
+            <h1 style="font-size: 1.5rem; text-align: center; margin-bottom: 15px;" class="title-hacker">SOBRE O SISTEMA</h1>
             
-            const goals = (Math.random() * 2.5 + 0.5).toFixed(1);
-            const corners = Math.floor(Math.random() * 5) + 7;
-            const confidence = Math.floor(Math.random() * 15) + 80;
+            <div class="about-text">
+                O <strong>Bot Hacker 0800</strong> é um inteligência matemática avançada projetada para decodificar e rastrear sequências de algoritmos em jogos do tipo Crash (Aviator).
+            </div>
+            
+            <div class="about-text">
+                Utilizando cálculos probabilísticos baseados nos tempos de resposta e quadrantes de velas anteriores, o sistema ajuda a encontrar quebras de tendências normais e janelas oportunas para multiplicadores altos.
+            </div>
 
-            const isHome = probH > probA;
-            const winner = isHome ? h : a;
-            const color = isHome ? 'var(--success)' : 'var(--primary)';
+            <div class="creator-badge">
+                🚀 Desenvolvido por: Criador 0800
+            </div>
 
-            const html = `
-                <div class="card result-card">
-                    <div style="text-align:center; margin-bottom:15px;">
-                        <span style="background:rgba(0,0,0,0.3); padding:4px 10px; border-radius:10px; font-size:0.7rem; color:var(--success); border:1px solid var(--success);">
-                            <i class="fas fa-check-circle"></i> PADRÃO IDENTIFICADO
-                        </span>
-                    </div>
+            <button class="btn btn-back" onclick="hideAbout()">← Voltar ao Menu</button>
+        </div>
 
-                    <div class="stat-row">
-                        <div class="stat-header"><span>VITÓRIA ${h}</span><span class="mono">${probH}%</span></div>
-                        <div class="progress-bg"><div class="progress-fill" style="width:${probH}%; background:${isHome ? 'var(--success)' : '#333'}"></div></div>
-                    </div>
-                     <div class="stat-row">
-                        <div class="stat-header"><span>EMPATE</span><span class="mono">${probD}%</span></div>
-                        <div class="progress-bg"><div class="progress-fill" style="width:${probD}%; background:#444"></div></div>
-                    </div>
-                     <div class="stat-row">
-                        <div class="stat-header"><span>VITÓRIA ${a}</span><span class="mono">${probA}%</span></div>
-                        <div class="progress-bg"><div class="progress-fill" style="width:${probA}%; background:${!isHome ? 'var(--primary)' : '#333'}"></div></div>
-                    </div>
+    </div>
 
-                    <div class="grid-stats">
-                        <div class="stat-box">
-                            <div class="stat-val mono" style="color:${color}">+${goals}</div>
-                            <div class="stat-lbl">Gols Esperados</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-val mono">+${corners}</div>
-                            <div class="stat-lbl">Escanteios</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-val mono">SIM</div>
-                            <div class="stat-lbl">Ambos Marcam</div>
-                        </div>
-                        <div class="stat-box" style="border-color:var(--success)">
-                            <div class="stat-val mono" style="color:var(--success)">${confidence}%</div>
-                            <div class="stat-lbl">Confiança</div>
-                        </div>
-                    </div>
+    <script>
+        let currentSelectedHouse = "";
+        let cooldownActive = false;
+        let cooldownTimer = null;
+        let predictedTimes = []; // Guarda os minutos analisados ("HH:MM")
 
-                    <button class="btn btn-outline" onclick="copySignal('${h}', '${a}', '+${goals}')" style="margin-top:15px; border-style:dashed;">
-                        <i class="far fa-copy"></i> COPIAR SINAL
-                    </button>
+        // Splash Screen inicial
+        setTimeout(() => {
+            document.getElementById('screen-splash').style.display = 'none';
+            document.getElementById('screen-select').style.display = 'block';
+        }, 3000);
+
+        // Seleção de plataforma
+        function selectHouse(houseName) {
+            currentSelectedHouse = houseName;
+            document.getElementById('selected-house-label').innerText = houseName.toUpperCase();
+            
+            document.getElementById('input-vela').value = "";
+            document.getElementById('input-hora').value = "";
+            document.getElementById('input-min').value = "";
+            document.getElementById('validation-error').style.display = 'none';
+
+            // Reseta histórico ao mudar de plataforma
+            predictedTimes = [];
+            document.getElementById('history-list').innerHTML = `
+                <div id="history-empty" style="color: #718096; font-size: 0.85rem; text-align: center; margin-top: 50px;">
+                    Nenhuma previsão feita ainda nesta sessão.
                 </div>
             `;
+            document.getElementById('mobile-history-list').innerHTML = "";
+            document.getElementById('mobile-history-container').style.display = 'none';
 
-            resArea.innerHTML = html;
-            resArea.style.display = 'block';
-            
-            // Salvar Histórico
-            saveToHistory(`${h} vs ${a}`, `${probH}% / ${probA}%`);
-            localStorage.setItem('oracle_last_match', JSON.stringify({match: `${h} vs ${a}`, time: Date.now()}));
-
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fas fa-bolt"></i> GERAR NOVA INTELIGÊNCIA`;
-
-        }, 2000);
-    }
-
-    function copySignal(h, a, g) {
-        const text = `🔮 *ORACLE V19 PREDICT* 🔮\n\n⚽ ${h} x ${a}\n📊 Gols: ${g}\n✅ Confiança: ALTA\n\nLink: oracle-ai.app`;
-        navigator.clipboard.writeText(text);
-        showModal("Copiado!", "Sinal copiado para a área de transferência.");
-    }
-
-    // --- HISTÓRICO ---
-    function saveToHistory(match, result) {
-        let hist = JSON.parse(localStorage.getItem('oracle_hist_' + currentUser) || '[]');
-        hist.unshift({ m: match, r: result, t: new Date().toLocaleTimeString() });
-        if(hist.length > 20) hist.pop();
-        localStorage.setItem('oracle_hist_' + currentUser, JSON.stringify(hist));
-    }
-
-    function loadHistory() {
-        const list = document.getElementById('history-list');
-        const hist = JSON.parse(localStorage.getItem('oracle_hist_' + currentUser) || '[]');
-        
-        if(hist.length === 0) {
-            list.innerHTML = `<div style="text-align:center; padding:20px; color:#444;">Nenhuma análise salva.</div>`;
-            return;
-        }
-
-        list.innerHTML = hist.map(item => `
-            <div class="card" style="padding:15px; border-left: 4px solid var(--primary); margin-bottom:10px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-weight:700; font-size:0.9rem;">${item.m}</div>
-                    <div class="mono" style="color:var(--accent); font-size:0.8rem;">${item.r}</div>
-                </div>
-                <div style="font-size:0.7rem; color:#555; margin-top:5px;">${item.t}</div>
-            </div>
-        `).join('');
-    }
-
-    // --- CHAT SYSTEM (Fake Live) ---
-    function loadChat() {
-        const feed = document.getElementById('chat-feed');
-        // Carrega mensagens salvas ou iniciais
-        let msgs = JSON.parse(localStorage.getItem('oracle_chat_global') || '[]');
-        if(msgs.length === 0) {
-            msgs = [
-                {u: 'Admin', m: 'Bem-vindos à versão V19 Elite! 🚀', me: false},
-                {u: 'PedroHB', m: 'A assertividade hoje tá insana!', me: false}
-            ];
-        }
-        renderChat(msgs);
-    }
-
-    function renderChat(msgs) {
-        const feed = document.getElementById('chat-feed');
-        feed.innerHTML = msgs.map(msg => `
-            <div class="msg ${msg.me ? 'msg-me' : 'msg-other'}">
-                ${!msg.me ? `<span class="msg-user" style="color:${getColor(msg.u)}">${msg.u}</span>` : ''}
-                ${msg.m}
-            </div>
-        `).join('');
-        feed.scrollTop = feed.scrollHeight;
-    }
-
-    function sendMsg() {
-        const input = document.getElementById('chat-input');
-        const txt = input.value.trim();
-        if(!txt) return;
-
-        addMsgToChat(currentUser, txt, true);
-        input.value = '';
-    }
-
-    function addMsgToChat(user, text, isMe) {
-        let msgs = JSON.parse(localStorage.getItem('oracle_chat_global') || '[]');
-        const newMsg = {u: user, m: text, me: isMe};
-        msgs.push(newMsg);
-        if(msgs.length > 50) msgs.shift();
-        localStorage.setItem('oracle_chat_global', JSON.stringify(msgs));
-        
-        // Renderiza apenas a nova (ou re-renderiza tudo para simplificar)
-        renderChat(msgs);
-    }
-
-    function startFakeChat() {
-        const fakeUsers = ['CarlosBet', 'AnaTrader', 'Lucas_Vip', 'MarcosWin', 'FelipeTips'];
-        const fakeMsgs = [
-            'Green no Real Madrid!', 'Alguém pegou esse sinal?', 'V19 tá muito assertiva hoje', 'Pagou dmais!', 'Bora pra próxima', 'Meta batida por hoje ✅'
-        ];
-
-        fakeChatInterval = setInterval(() => {
-            if(Math.random() > 0.7) { // 30% de chance de mensagem a cada 5s
-                const u = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
-                const m = fakeMsgs[Math.floor(Math.random() * fakeMsgs.length)];
-                addMsgToChat(u, m, false);
+            const placardBtn = document.getElementById('btn-open-placard');
+            if (houseName === 'Placard') {
+                placardBtn.style.display = 'block';
+            } else {
+                placardBtn.style.display = 'none';
             }
-        }, 5000);
-    }
+            
+            document.getElementById('dashboard-placeholder').style.display = 'block';
+            document.getElementById('signal-results').style.display = 'none';
+            document.getElementById('pink-results').style.display = 'none';
+            
+            document.getElementById('screen-select').style.display = 'none';
+            document.getElementById('screen-dashboard').style.display = 'block';
+        }
 
-    function getColor(name) {
-        let hash = 0;
-        for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
-        const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
-        return '#' + "00000".substring(0, 6 - c.length) + c;
-    }
+        function openPlacardLink() {
+            window.open('https://media1.placard.co.mz/redirect.aspx?pid=5427&bid=1690', '_blank');
+        }
 
-    // --- UTILITÁRIOS GERAIS ---
-    function togglePass() {
-        const x = document.getElementById('login-pass');
-        x.type = x.type === "password" ? "text" : "password";
-    }
+        function goToSelection() {
+            if (cooldownActive) return;
+            document.getElementById('screen-dashboard').style.display = 'none';
+            document.getElementById('screen-select').style.display = 'block';
+        }
 
-    function showModal(title, msg) {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-msg').innerText = msg;
-        document.getElementById('modal-overlay').style.display = 'flex';
-    }
+        // Telas Customizadas do Sobre
+        function showAbout() {
+            document.getElementById('screen-select').style.display = 'none';
+            document.getElementById('about-section').style.display = 'block';
+        }
 
-    function closeModal() {
-        document.getElementById('modal-overlay').style.display = 'none';
-    }
+        function hideAbout() {
+            document.getElementById('about-section').style.display = 'none';
+            document.getElementById('screen-select').style.display = 'block';
+        }
 
-</script>
+        // Validação sem alertas nativos do navegador
+        function validateInputs() {
+            const vela = document.getElementById('input-vela').value;
+            const hora = document.getElementById('input-hora').value;
+            const min = document.getElementById('input-min').value;
+            const errorMsg = document.getElementById('validation-error');
+
+            if (!vela || hora === "" || min === "") {
+                errorMsg.innerText = "Preencha todos os campos antes de prever!";
+                errorMsg.style.display = 'block';
+                return false;
+            }
+
+            // Impede prever o mesmo minuto consecutivamente ou repetidamente na mesma sessão
+            const hh = String(hora).padStart(2, '0');
+            const mm = String(min).padStart(2, '0');
+            const timeKey = `${hh}:${mm}`;
+
+            if (predictedTimes.includes(timeKey)) {
+                errorMsg.innerText = `O horário ${timeKey} já possui uma previsão ativa! Insira uma nova vela.`;
+                errorMsg.style.display = 'block';
+                return false;
+            }
+
+            errorMsg.style.display = 'none';
+            return true;
+        }
+
+        // Adiciona à seção dedicada de "Velas Já Previstas" (Tanto PC quanto Mobile)
+        function registerPredictionToHistory(timeKey, type, details) {
+            if (!predictedTimes.includes(timeKey)) {
+                predictedTimes.push(timeKey);
+            }
+
+            // Trata histórico do PC (Sidebar)
+            const emptyLabel = document.getElementById('history-empty');
+            if (emptyLabel) emptyLabel.remove();
+
+            const pcHistoryList = document.getElementById('history-list');
+            const mobileHistoryContainer = document.getElementById('mobile-history-container');
+            const mobileHistoryList = document.getElementById('mobile-history-list');
+
+            // Ativa o container mobile caso seja celular
+            mobileHistoryContainer.style.display = 'block';
+
+            const isNormal = type === 'NORMAL';
+            const badgeBg = isNormal ? 'rgba(0, 255, 136, 0.1)' : 'rgba(255, 0, 127, 0.1)';
+            const badgeColor = isNormal ? '#00ff88' : '#ff007f';
+
+            // Elemento HTML do histórico
+            const createItem = () => {
+                const item = document.createElement('div');
+                item.style.background = 'rgba(255, 255, 255, 0.02)';
+                item.style.border = '1px solid rgba(255, 255, 255, 0.05)';
+                item.style.borderRadius = '10px';
+                item.style.padding = '8px 12px';
+                item.style.display = 'flex';
+                item.style.justifyContent = 'space-between';
+                item.style.alignItems = 'center';
+                item.style.fontSize = '0.8rem';
+                item.style.animation = 'slideUp 0.3s ease forwards';
+
+                item.innerHTML = `
+                    <div style="text-align: left;">
+                        <span style="color: #a0aec0;">Base:</span> <strong style="color: #fff;">${timeKey}</strong>
+                        <div style="font-size: 0.7rem; color: #718096; margin-top: 2px;">Vela: ${document.getElementById('input-vela').value}X</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="background: ${badgeBg}; color: ${badgeColor}; padding: 2px 6px; border-radius: 4px; font-weight: 600; font-size: 0.7rem;">${type}</span>
+                        <div style="font-size: 0.7rem; color: #a0aec0; margin-top: 2px;">${details}</div>
+                    </div>
+                `;
+                return item;
+            };
+
+            // Insere no topo de ambas listas (para atualizar instantaneamente no PC e celular)
+            pcHistoryList.insertBefore(createItem(), pcHistoryList.firstChild);
+            mobileHistoryList.insertBefore(createItem(), mobileHistoryList.firstChild);
+        }
+
+        // Cooldown de 40 Segundos
+        function startCooldown() {
+            cooldownActive = true;
+            let timeLeft = 40;
+            
+            const btnAction = document.getElementById('btn-action');
+            const btnPink = document.getElementById('btn-pink');
+
+            btnAction.disabled = true;
+            btnPink.disabled = true;
+
+            cooldownTimer = setInterval(() => {
+                timeLeft--;
+                btnAction.innerText = `AGUARDE ${timeLeft}s...`;
+                btnPink.innerText = `BLOQUEADO (${timeLeft}s)`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(cooldownTimer);
+                    cooldownActive = false;
+                    btnAction.disabled = false;
+                    btnPink.disabled = false;
+                    btnAction.innerText = "PREVER ENTRADA NORMAL";
+                    btnPink.innerText = "🌸 VELAS ROSAS PRÓXIMOS";
+                }
+            }, 1000);
+        }
+
+        function startLoading(text, color) {
+            document.getElementById('dashboard-placeholder').style.display = 'none';
+            document.getElementById('signal-results').style.display = 'none';
+            document.getElementById('pink-results').style.display = 'none';
+            
+            const loader = document.getElementById('mini-loader');
+            const loaderText = document.getElementById('mini-loader-text');
+            
+            loader.style.display = 'block';
+            loader.style.borderLeftColor = color;
+            
+            loaderText.style.display = 'block';
+            loaderText.innerText = text;
+            loaderText.style.color = color;
+        }
+
+        function stopLoading() {
+            document.getElementById('mini-loader').style.display = 'none';
+            document.getElementById('mini-loader-text').style.display = 'none';
+        }
+
+        // PREVER ENTRADA NORMAL (Entre 1m e 2m após o horário base - Sem segundos)
+        function triggerSignal() {
+            if (!validateInputs()) return;
+
+            startLoading('Rastreando padrão...', '#00ff88');
+
+            const horaInput = parseInt(document.getElementById('input-hora').value);
+            const minInput = parseInt(document.getElementById('input-min').value);
+            const timeKey = `${String(horaInput).padStart(2, '0')}:${String(minInput).padStart(2, '0')}`;
+
+            setTimeout(() => {
+                stopLoading();
+
+                const dataBase = new Date();
+                dataBase.setHours(horaInput);
+                dataBase.setMinutes(minInput);
+
+                // Adiciona entre 1 a 2 minutos ao horário base
+                const minutosAdicionais = Math.floor(Math.random() * (2 - 1 + 1)) + 1;
+                dataBase.setMinutes(dataBase.getMinutes() + minutosAdicionais);
+
+                const hhTarget = String(dataBase.getHours()).padStart(2, '0');
+                const mmTarget = String(dataBase.getMinutes()).padStart(2, '0');
+                const targetFormatted = `${hhTarget}:${mmTarget}`;
+
+                const predictionMultiplier = (Math.random() * (5.00 - 2.00) + 2.00).toFixed(2);
+                const protectionMultiplier = (Math.random() * (3.00 - 1.50) + 1.50).toFixed(2);
+                
+                document.getElementById('target-time').innerText = targetFormatted;
+                document.getElementById('target-multiplier').innerText = `${predictionMultiplier}X`;
+                document.getElementById('target-protection').innerText = `PROTEÇÃO EM ${protectionMultiplier}X`;
+                
+                document.getElementById('signal-results').style.display = 'block';
+                
+                // Registra o horário analisado para bloqueio e joga na seção "Velas Já Previstas"
+                registerPredictionToHistory(timeKey, 'NORMAL', `Entrada: ${targetFormatted}`);
+                
+                startCooldown();
+            }, 2500);
+        }
+
+        // VELAS ROSAS PRÓXIMOS (Sem segundos)
+        function triggerPinkSignal() {
+            if (!validateInputs()) return;
+
+            startLoading('Processando Sequências de Velas Rosas...', '#ff007f');
+
+            const horaInput = parseInt(document.getElementById('input-hora').value);
+            const minInput = parseInt(document.getElementById('input-min').value);
+            const timeKey = `${String(horaInput).padStart(2, '0')}:${String(minInput).padStart(2, '0')}`;
+
+            setTimeout(() => {
+                stopLoading();
+
+                const container = document.getElementById('pink-entries-list');
+                container.innerHTML = "";
+
+                const dataBase = new Date();
+                dataBase.setHours(horaInput);
+                dataBase.setMinutes(minInput);
+
+                const quantidadePrevisoes = Math.floor(Math.random() * 3) + 3; 
+
+                for (let i = 0; i < quantidadePrevisoes; i++) {
+                    const minutosAdicionais = Math.floor(Math.random() * 3) + 3; 
+                    dataBase.setMinutes(dataBase.getMinutes() + minutosAdicionais);
+
+                    const hh = String(dataBase.getHours()).padStart(2, '0');
+                    const mm = String(dataBase.getMinutes()).padStart(2, '0');
+
+                    const protecao = (Math.random() * (5.00 - 2.50) + 2.50).toFixed(2);
+                    const possivel = (Math.random() * (30.00 - 10.00) + 10.00).toFixed(2);
+
+                    const entryDiv = document.createElement('div');
+                    entryDiv.className = 'pink-entry';
+                    entryDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px;">
+                            <span style="color: #ff007f; font-weight: 800;">Entrada #${i + 1}</span>
+                            <span style="color: #fff; font-weight: 600;">Horário: ${hh}:${mm}</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                            <span>Proteção: <strong style="color: #ffa500;">${protecao}X</strong></span>
+                            <span>Alvo: <strong class="highlight-pink">${possivel}X</strong></span>
+                        </div>
+                    `;
+                    container.appendChild(entryDiv);
+                }
+
+                document.getElementById('pink-results').style.display = 'block';
+                
+                // Registra o horário analisado para bloqueio e joga na seção de histórico dedicada
+                registerPredictionToHistory(timeKey, 'ROSA', `${quantidadePrevisoes} Entradas`);
+                
+                startCooldown();
+            }, 3000);
+        }
+    </script>
 </body>
 </html>
